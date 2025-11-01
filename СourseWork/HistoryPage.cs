@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,7 +21,7 @@ namespace СourseWork
         private void InitializeHistoryUI()
         {
             this.Dock = DockStyle.Fill;
-            this.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
+            this.BackColor = System.Drawing.Color.White;
 
             historyGrid = new DataGridView
             {
@@ -30,19 +31,24 @@ namespace СourseWork
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                BackgroundColor = System.Drawing.Color.FromArgb(40, 40, 40),
-                ForeColor = System.Drawing.Color.White,
+                BackgroundColor = System.Drawing.Color.White,
+                ForeColor = System.Drawing.Color.Black,
                 ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
                 {
-                    BackColor = System.Drawing.Color.MediumPurple,
+                    BackColor = System.Drawing.Color.FromArgb(122, 86, 255),
                     ForeColor = System.Drawing.Color.White,
                     Font = new System.Drawing.Font("Segoe UI", 10, System.Drawing.FontStyle.Bold)
                 },
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
-                    BackColor = System.Drawing.Color.FromArgb(50, 50, 50),
-                    ForeColor = System.Drawing.Color.White,
-                    SelectionBackColor = System.Drawing.Color.DarkViolet
+                    BackColor = System.Drawing.Color.White,
+                    ForeColor = System.Drawing.Color.Black,
+                    SelectionBackColor = System.Drawing.Color.FromArgb(122, 86, 255)
+                },
+                AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
+                {
+                    BackColor = System.Drawing.Color.FromArgb(243, 247, 255),
+                    ForeColor = System.Drawing.Color.Black
                 }
             };
 
@@ -57,7 +63,7 @@ namespace СourseWork
                 Text = "Сбросить историю",
                 Dock = DockStyle.Bottom,
                 Height = 40,
-                BackColor = System.Drawing.Color.DarkRed,
+                BackColor = System.Drawing.Color.FromArgb(122, 86, 255),
                 ForeColor = System.Drawing.Color.White,
                 FlatStyle = FlatStyle.Flat
             };

@@ -38,6 +38,8 @@
             panel2 = new Panel();
             pictureBox1 = new PictureBox();
             panel3 = new Panel();
+            lblSectionTitle = new Label();
+            picSectionIcon = new PictureBox();
             btnReg = new Button();
             profileIcon = new PictureBox();
             btnLogin = new Button();
@@ -45,10 +47,12 @@
             profileToolStripMenuItem = new ToolStripMenuItem();
             logoutToolStripMenuItem = new ToolStripMenuItem();
             mainPanel = new Panel();
+            panel4 = new Panel();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picSectionIcon).BeginInit();
             ((System.ComponentModel.ISupportInitialize)profileIcon).BeginInit();
             profileMenu.SuspendLayout();
             SuspendLayout();
@@ -150,6 +154,8 @@
             // panel3
             // 
             panel3.BackColor = Color.FromArgb(243, 247, 255);
+            panel3.Controls.Add(lblSectionTitle);
+            panel3.Controls.Add(picSectionIcon);
             panel3.Controls.Add(btnReg);
             panel3.Controls.Add(profileIcon);
             panel3.Controls.Add(btnLogin);
@@ -158,6 +164,24 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(872, 60);
             panel3.TabIndex = 6;
+            // 
+            // lblSectionTitle
+            // 
+            lblSectionTitle.AutoSize = true;
+            lblSectionTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            lblSectionTitle.Location = new Point(44, 16);
+            lblSectionTitle.Name = "lblSectionTitle";
+            lblSectionTitle.Size = new Size(0, 28);
+            lblSectionTitle.TabIndex = 5;
+            // 
+            // picSectionIcon
+            // 
+            picSectionIcon.Location = new Point(6, 12);
+            picSectionIcon.Name = "picSectionIcon";
+            picSectionIcon.Size = new Size(32, 32);
+            picSectionIcon.SizeMode = PictureBoxSizeMode.Zoom;
+            picSectionIcon.TabIndex = 4;
+            picSectionIcon.TabStop = false;
             // 
             // btnReg
             // 
@@ -219,12 +243,21 @@
             logoutToolStripMenuItem.Size = new Size(125, 24);
             logoutToolStripMenuItem.Text = "Logout";
             // 
+            // panel4
+            // 
+            panel4.BackColor = Color.FromArgb(122, 86, 255);
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(210, 60);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(872, 1);
+            panel4.TabIndex = 16;
+            // 
             // mainPanel
             // 
             mainPanel.Dock = DockStyle.Fill;
-            mainPanel.Location = new Point(210, 60);
+            mainPanel.Location = new Point(210, 61);
             mainPanel.Name = "mainPanel";
-            mainPanel.Size = new Size(872, 543);
+            mainPanel.Size = new Size(872, 542);
             mainPanel.TabIndex = 15;
             // 
             // Form1
@@ -234,6 +267,7 @@
             BackColor = Color.FromArgb(243, 247, 255);
             ClientSize = new Size(1082, 603);
             Controls.Add(mainPanel);
+            Controls.Add(panel4);
             Controls.Add(panel3);
             Controls.Add(panel1);
             Name = "Form1";
@@ -244,6 +278,8 @@
             panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picSectionIcon).EndInit();
             ((System.ComponentModel.ISupportInitialize)profileIcon).EndInit();
             profileMenu.ResumeLayout(false);
             ResumeLayout(false);
@@ -265,5 +301,8 @@
         private ToolStripMenuItem logoutToolStripMenuItem;
         private PictureBox pictureBox1;
         private Panel mainPanel;
+        private PictureBox picSectionIcon;
+        private Label lblSectionTitle;
+        private Panel panel4;
     }
 }

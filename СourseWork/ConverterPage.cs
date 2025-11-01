@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace СourseWork
@@ -24,6 +26,9 @@ namespace СourseWork
         public ConverterPage()
         {
             InitializeComponent();
+            
+            // Устанавливаем Dock для растягивания на весь экран
+            this.Dock = DockStyle.Fill;
 
             // Инициализация элементов — убедись, что имена совпадают с дизайнером:
             comboBox1.Items.AddRange(rates.Keys.ToArray());
@@ -40,7 +45,237 @@ namespace СourseWork
             comboBox1.SelectedIndexChanged += ComboBox_Changed;
             comboBox2.SelectedIndexChanged += ComboBox_Changed;
 
+            // Настраиваем PictureBox для обмена валют
+            buttonSwap.Cursor = Cursors.Hand;
             buttonSwap.Click += buttonSwap_Click;
+
+            // Быстрые кнопки слева
+            btnL_KZT.Click += (_, __) => SelectQuick(comboBox1, "KZT");
+            btnL_USD.Click += (_, __) => SelectQuick(comboBox1, "USD");
+            btnL_EUR.Click += (_, __) => SelectQuick(comboBox1, "EUR");
+            btnL_RUB.Click += (_, __) => SelectQuick(comboBox1, "RUB");
+            // Быстрые кнопки справа
+            btnR_KZT.Click += (_, __) => SelectQuick(comboBox2, "KZT");
+            btnR_USD.Click += (_, __) => SelectQuick(comboBox2, "USD");
+            btnR_EUR.Click += (_, __) => SelectQuick(comboBox2, "EUR");
+            btnR_RUB.Click += (_, __) => SelectQuick(comboBox2, "RUB");
+
+            UpdateRateLabels();
+            HighlightQuickButtons();
+            
+            // Обработчик для адаптации элементов при изменении размера
+            this.Resize += ConverterPage_Resize;
+            
+            // Вызываем один раз для начальной настройки позиций после полной загрузки
+            this.HandleCreated += (s, e) =>
+            {
+                this.BeginInvoke(new Action(() => ConverterPage_Resize(this, EventArgs.Empty)));
+            };
+        }
+        
+        private void ConverterPage_Resize(object sender, EventArgs e)
+        {
+            const int breakpointWidth = 800; // Ширина для переключения макета
+            
+            if (this.Width >= breakpointWidth)
+            {
+                // Горизонтальный макет (side-by-side)
+                LayoutHorizontal();
+            }
+            else
+            {
+                // Вертикальный макет (stacked)
+                LayoutVertical();
+            }
+        }
+
+        private void LayoutHorizontal()
+        {
+            // Минимальная ширина для горизонтального макета
+            if (this.Width < 700) return;
+            
+            // Центрируем элементы конвертера по горизонтали
+            int centerX = this.Width / 2;
+            int spacing = 50; // Расстояние между элементами
+            int elementWidth = 300; // Ширина каждого блока
+            int swapWidth = buttonSwap != null ? buttonSwap.Width : 68; // Ширина swap иконки
+            
+            // Рассчитываем позиции с учетом swap иконки
+            int totalWidth = elementWidth * 2 + swapWidth + spacing * 2;
+            int startX = centerX - totalWidth / 2;
+            
+            // Левый блок
+            int leftX = Math.Max(startX, 20);
+            
+            // Swap иконка между блоками
+            int swapX = leftX + elementWidth + spacing;
+            
+            // Правый блок
+            int rightX = swapX + swapWidth + spacing;
+            
+            // Проверяем, помещается ли все в окно
+            if (rightX + elementWidth > this.Width - 20)
+            {
+                // Пересчитываем, если не помещается
+                int maxRightX = this.Width - elementWidth - 20;
+                rightX = maxRightX;
+                swapX = rightX - spacing - swapWidth;
+                leftX = swapX - spacing - elementWidth;
+                if (leftX < 20) leftX = 20;
+            }
+            
+            // Фиксированная вертикальная позиция для всех элементов
+            int textBoxTop = 253; // Базовая вертикальная позиция текстовых полей
+            int textBoxHeight = 110; // Высота текстовых полей
+            int titleTop = 153; // Позиция заголовков
+            int panelTop = 200; // Позиция панелей с кнопками
+            int rateTop = textBoxTop + textBoxHeight + 10; // Позиция меток курсов
+            
+            // Обновляем позиции элементов слева
+            if (lblLeftTitle != null && !lblLeftTitle.IsDisposed)
+            {
+                lblLeftTitle.Left = leftX;
+                lblLeftTitle.Top = titleTop;
+            }
+            if (panelQuickLeft != null && !panelQuickLeft.IsDisposed)
+            {
+                panelQuickLeft.Left = leftX;
+                panelQuickLeft.Top = panelTop;
+            }
+            if (textBox1 != null && !textBox1.IsDisposed)
+            {
+                textBox1.Left = leftX;
+                textBox1.Top = textBoxTop;
+                textBox1.Width = elementWidth;
+                textBox1.Height = textBoxHeight;
+            }
+            if (lblLeftRate != null && !lblLeftRate.IsDisposed)
+            {
+                lblLeftRate.Left = leftX + 10;
+                lblLeftRate.Top = rateTop;
+            }
+            
+            // Обновляем позиции элементов справа
+            if (lblRightTitle != null && !lblRightTitle.IsDisposed)
+            {
+                lblRightTitle.Left = rightX;
+                lblRightTitle.Top = titleTop;
+            }
+            if (panelQuickRight != null && !panelQuickRight.IsDisposed)
+            {
+                panelQuickRight.Left = rightX;
+                panelQuickRight.Top = panelTop;
+            }
+            if (textBox2 != null && !textBox2.IsDisposed)
+            {
+                textBox2.Left = rightX;
+                textBox2.Top = textBoxTop; // Та же позиция, что и textBox1
+                textBox2.Width = elementWidth;
+                textBox2.Height = textBoxHeight; // Та же высота, что и textBox1
+            }
+            if (lblRightRate != null && !lblRightRate.IsDisposed)
+            {
+                lblRightRate.Left = rightX + 10;
+                lblRightRate.Top = rateTop;
+            }
+            
+            // Центрируем кнопку swap точно между двумя текстовыми полями
+            if (buttonSwap != null && !buttonSwap.IsDisposed)
+            {
+                // По горизонтали - точно между полями
+                buttonSwap.Left = swapX;
+                
+                // По вертикали - точно по центру текстовых полей
+                int textBoxCenterY = textBoxTop + textBoxHeight / 2;
+                buttonSwap.Top = textBoxCenterY - buttonSwap.Height / 2;
+            }
+        }
+
+        private void LayoutVertical()
+        {
+            // Вертикальный макет - элементы расположены один над другим
+            int elementWidth = Math.Min(300, this.Width - 100); // Ширина блока с отступами
+            int centerX = this.Width / 2;
+            int leftX = centerX - elementWidth / 2;
+            
+            // Высота элементов
+            int textBoxHeight = 110;
+            int spacing = 30; // Расстояние между верхней и нижней панелью
+            
+            // Верхняя панель (У меня есть)
+            int topPanelTop = 100;
+            int topTitleTop = topPanelTop;
+            int topPanelButtonsTop = topPanelTop + 40;
+            int topTextBoxTop = topPanelButtonsTop + 50;
+            int topRateTop = topTextBoxTop + textBoxHeight + 10;
+            
+            // Обновляем позиции элементов верхней панели
+            if (lblLeftTitle != null && !lblLeftTitle.IsDisposed)
+            {
+                lblLeftTitle.Left = leftX;
+                lblLeftTitle.Top = topTitleTop;
+            }
+            if (panelQuickLeft != null && !panelQuickLeft.IsDisposed)
+            {
+                panelQuickLeft.Left = leftX;
+                panelQuickLeft.Top = topPanelButtonsTop;
+                panelQuickLeft.Width = elementWidth;
+            }
+            if (textBox1 != null && !textBox1.IsDisposed)
+            {
+                textBox1.Left = leftX;
+                textBox1.Top = topTextBoxTop;
+                textBox1.Width = elementWidth;
+                textBox1.Height = textBoxHeight;
+            }
+            if (lblLeftRate != null && !lblLeftRate.IsDisposed)
+            {
+                lblLeftRate.Left = leftX + 10;
+                lblLeftRate.Top = topRateTop;
+            }
+            
+            // Нижняя панель (Хочу приобрести)
+            int bottomPanelTop = topRateTop + 40 + spacing;
+            int bottomTitleTop = bottomPanelTop;
+            int bottomPanelButtonsTop = bottomPanelTop + 40;
+            int bottomTextBoxTop = bottomPanelButtonsTop + 50;
+            int bottomRateTop = bottomTextBoxTop + textBoxHeight + 10;
+            
+            // Обновляем позиции элементов нижней панели
+            if (lblRightTitle != null && !lblRightTitle.IsDisposed)
+            {
+                lblRightTitle.Left = leftX;
+                lblRightTitle.Top = bottomTitleTop;
+            }
+            if (panelQuickRight != null && !panelQuickRight.IsDisposed)
+            {
+                panelQuickRight.Left = leftX;
+                panelQuickRight.Top = bottomPanelButtonsTop;
+                panelQuickRight.Width = elementWidth;
+            }
+            if (textBox2 != null && !textBox2.IsDisposed)
+            {
+                textBox2.Left = leftX;
+                textBox2.Top = bottomTextBoxTop;
+                textBox2.Width = elementWidth;
+                textBox2.Height = textBoxHeight;
+            }
+            if (lblRightRate != null && !lblRightRate.IsDisposed)
+            {
+                lblRightRate.Left = leftX + 10;
+                lblRightRate.Top = bottomRateTop;
+            }
+            
+            // Кнопка swap справа по центру между панелями
+            if (buttonSwap != null && !buttonSwap.IsDisposed)
+            {
+                // По горизонтали - справа с отступом
+                buttonSwap.Left = this.Width - buttonSwap.Width - 30;
+                
+                // По вертикали - между двумя панелями
+                int swapCenterY = (topRateTop + bottomTitleTop) / 2;
+                buttonSwap.Top = swapCenterY - buttonSwap.Height / 2;
+            }
         }
 
         private void TextBox1_TextChanged(object sender, EventArgs e)
@@ -79,6 +314,8 @@ namespace СourseWork
         private void ComboBox_Changed(object sender, EventArgs e)
         {
             ConvertCurrency(forward: true);
+            UpdateRateLabels();
+            HighlightQuickButtons();
         }
 
         private void ConvertCurrency(bool forward)
@@ -129,8 +366,7 @@ namespace СourseWork
                 else textBox1.Text = "";
             }
 
-            // Сохранение истории
-            
+            UpdateRateLabels();
         }
 
         private void SaveHistory(string from, string to, double input, double output)
@@ -154,6 +390,69 @@ namespace СourseWork
             textBox2.Text = temp;
 
             ConvertCurrency(forward: true);
+            UpdateRateLabels();
+            HighlightQuickButtons();
+        }
+
+        private void UpdateRateLabels()
+        {
+            if (comboBox1.SelectedItem == null || comboBox2.SelectedItem == null) return;
+            string left = comboBox1.SelectedItem.ToString();
+            string right = comboBox2.SelectedItem.ToString();
+
+            double rateLeftToRight = rates[right] / rates[left];
+            double rateRightToLeft = rates[left] / rates[right];
+
+            lblLeftRate.Text = $"1 {right} = {rateRightToLeft:F4} {left}";
+            lblRightRate.Text = $"1 {left} = {rateLeftToRight:F4} {right}";
+        }
+
+        private void SelectQuick(ComboBox combo, string code)
+        {
+            int idx = combo.Items.IndexOf(code);
+            if (idx >= 0) combo.SelectedIndex = idx;
+        }
+
+        private void HighlightQuickButtons()
+        {
+            // простое выделение цвета активной валюты (зелёный фон)
+            HighlightGroupLeft(comboBox1.SelectedItem?.ToString());
+            HighlightGroupRight(comboBox2.SelectedItem?.ToString());
+        }
+
+        private void HighlightGroupLeft(string code)
+        {
+            SetButtonActive(btnL_KZT, code == "KZT");
+            SetButtonActive(btnL_USD, code == "USD");
+            SetButtonActive(btnL_EUR, code == "EUR");
+            SetButtonActive(btnL_RUB, code == "RUB");
+        }
+
+        private void HighlightGroupRight(string code)
+        {
+            SetButtonActive(btnR_KZT, code == "KZT");
+            SetButtonActive(btnR_USD, code == "USD");
+            SetButtonActive(btnR_EUR, code == "EUR");
+            SetButtonActive(btnR_RUB, code == "RUB");
+        }
+
+        private void SetButtonActive(Button button, bool active)
+        {
+            if (active)
+            {
+                button.BackColor = Color.FromArgb(122, 86, 255);
+                button.ForeColor = Color.White;
+            }
+            else
+            {
+                button.BackColor = SystemColors.Control;
+                button.ForeColor = Color.Black;
+            }
+        }
+
+        private void lblRightTitle_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -43,6 +43,7 @@ namespace СourseWork
 
         private void InitializeCurrencyUI()
         {
+            this.Dock = DockStyle.Fill;
             this.BackColor = Color.White;
 
             labelTitle = new Label
@@ -51,6 +52,7 @@ namespace СourseWork
                 Font = new Font("Segoe UI", 22, FontStyle.Bold),
                 ForeColor = Color.Black,
                 AutoSize = true,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left,
                 Location = new Point(30, 20)
             };
             this.Controls.Add(labelTitle);
@@ -61,6 +63,7 @@ namespace СourseWork
                 Font = new Font("Segoe UI", 10),
                 ForeColor = Color.DimGray,
                 AutoSize = true,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left,
                 Location = new Point(30, 70)
             };
             this.Controls.Add(labelSubtitle);
@@ -70,6 +73,7 @@ namespace СourseWork
                 PlaceholderText = "Поиск по коду и стране",
                 Font = new Font("Segoe UI", 11),
                 Width = 350,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left,
                 Location = new Point(30, 110)
             };
             txtSearch.TextChanged += TxtSearch_TextChanged;
@@ -77,6 +81,7 @@ namespace СourseWork
 
             dataGridViewRates = new DataGridView
             {
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
                 Location = new Point(30, 160),
                 Size = new Size(900, 450),
                 BackgroundColor = Color.White,

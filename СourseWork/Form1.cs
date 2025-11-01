@@ -138,6 +138,11 @@ namespace СourseWork
             activeStyledButton.FlatAppearance.MouseDownBackColor = pressed;
             activeStyledButton.ForeColor = Color.White;
         }
+        private void SetSection(string title, Image icon)
+        {
+            lblSectionTitle.Text = title;
+            picSectionIcon.Image = icon;
+        }
 
         public Form1()
         {
@@ -388,6 +393,7 @@ namespace СourseWork
                 return;
             }
             LoadPage(new HistoryPage());
+            SetSection("История", Properties.Resources.history);
         }
 
         private void btnCurrency_Click(object sender, EventArgs e)
@@ -398,6 +404,7 @@ namespace СourseWork
                 return;
             }
             LoadPage(new CurrencyPage());
+            SetSection("Валюты", Properties.Resources.currency);
         }
         private void btnDynamics_Click(object sender, EventArgs e)
         {
@@ -407,20 +414,29 @@ namespace СourseWork
                 return;
             }
             LoadPage(new DynamicsPage());
+            SetSection("График", Properties.Resources.converter);
         }
 
         private void btnConverter_Click(object sender, EventArgs e)
         {
             LoadPage(new ConverterPage());
+            SetSection("Конвертер", Properties.Resources.converter);
         }
 
         private void LoadPage(UserControl page)
         {
+            // Сохраняем panel4 перед очисткой
+            Panel savedPanel4 = panel4;
             mainPanel.Controls.Clear(); // очищаем старую страницу
+
+            // Возвращаем panel4 обратно
+            mainPanel.Controls.Add(savedPanel4);
+
             page.Dock = DockStyle.Fill; // растягиваем на всю панель
             mainPanel.Controls.Add(page);
         }
     }
+
 
     // Вспомогательные методы стилизации кнопок
 
@@ -429,4 +445,6 @@ namespace СourseWork
         public static bool IsAuthorized { get; set; } = false;
         public static string CurrentUser { get; set; } = "";
     }
+
+
 }
