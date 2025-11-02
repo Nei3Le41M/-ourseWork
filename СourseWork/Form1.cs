@@ -408,7 +408,7 @@ namespace СourseWork
         {
             if (!SessionManager.IsAuthorized)
             {
-                ShowHint(btnCurrency, "Войдите, чтобы открыть расширенные курсы");
+                ShowHint(btnCurrency, "Зарегистрируйтесь, чтобы продолжить");
                 return;
             }
             LoadPage(new CurrencyPage());
@@ -419,7 +419,7 @@ namespace СourseWork
         {
             if (!SessionManager.IsAuthorized)
             {
-                ShowHint(btnDynamics, "Авторизуйтесь для доступа к динамике валют");
+                ShowHint(btnDynamics, "В данный момент функция находится в разработке");
                 return;
             }
             LoadPage(new DynamicsPage());

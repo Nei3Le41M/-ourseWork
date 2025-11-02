@@ -30,17 +30,33 @@ namespace СourseWork
         /// </summary>
         private void InitializeComponent()
         {
+            label1 = new Label();
             SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.Top;
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI Semibold", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            label1.Location = new Point(133, 194);
+            label1.Name = "label1";
+            label1.Size = new Size(706, 38);
+            label1.TabIndex = 0;
+            label1.Text = "В данный момент функция находится в разработке";
             // 
             // DynamicsPage
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(label1);
             Name = "DynamicsPage";
-            Size = new System.Drawing.Size(980, 640);
+            Size = new Size(980, 640);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private Label label1;
     }
 }

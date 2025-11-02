@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace СourseWork
@@ -10,14 +11,7 @@ namespace СourseWork
     public partial class ConverterPage : UserControl
     {
         // Поля (расположены в классе)
-        private readonly Dictionary<string, double> rates = new Dictionary<string, double>()
-        {
-            {"USD", 1.0},
-            {"EUR", 0.92},
-            {"KZT", 477.50},
-            {"RUB", 95.30},
-            {"GBP", 0.79}
-        };
+        private Dictionary<string, double> rates = new Dictionary<string, double>();
 
         private System.Windows.Forms.Timer inputTimer;
         private bool isLeftChanged = false;
@@ -30,11 +24,11 @@ namespace СourseWork
             // Устанавливаем Dock для растягивания на весь экран
             this.Dock = DockStyle.Fill;
 
+            // Загружаем курсы валют из сервиса
+            LoadCurrencyRates();
+
             // Инициализация элементов — убедись, что имена совпадают с дизайнером:
-            comboBox1.Items.AddRange(rates.Keys.ToArray());
-            comboBox2.Items.AddRange(rates.Keys.ToArray());
-            comboBox1.SelectedIndex = 0;
-            comboBox2.SelectedIndex = 1;
+            UpdateCurrencyComboBoxes();
 
             inputTimer = new System.Windows.Forms.Timer();
             inputTimer.Interval = 1000;
@@ -366,13 +360,17 @@ namespace СourseWork
 
                 if (forward)
                 {
-                    from = comboBox1.SelectedItem.ToString();
-                    to = comboBox2.SelectedItem.ToString();
-                    if (string.IsNullOrWhiteSpace(textBox1.Text)) { textBox2.Text = ""; return; }
+                    from = comboBox1.SelectedItem?.ToString() ?? "";
+                    to = comboBox2.SelectedItem?.ToString() ?? "";
+                    if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to))
+                    {
+                        textBox2.Text = "";
+                        return;
+                    }
 
                     amount = double.Parse(textBox1.Text);
-                    double amountInUSD = amount / rates[from];
-                    double result = amountInUSD * rates[to];
+                    // Используем CurrencyRateService для конвертации
+                    double result = CurrencyRateService.Convert(from, to, amount);
 
                     isRightChanged = true;
                     textBox2.Text = result.ToString("F2");
@@ -383,13 +381,17 @@ namespace СourseWork
                 }
                 else
                 {
-                    from = comboBox2.SelectedItem.ToString();
-                    to = comboBox1.SelectedItem.ToString();
-                    if (string.IsNullOrWhiteSpace(textBox2.Text)) { textBox1.Text = ""; return; }
+                    from = comboBox2.SelectedItem?.ToString() ?? "";
+                    to = comboBox1.SelectedItem?.ToString() ?? "";
+                    if (string.IsNullOrWhiteSpace(textBox2.Text) || string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to))
+                    {
+                        textBox1.Text = "";
+                        return;
+                    }
 
                     amount = double.Parse(textBox2.Text);
-                    double amountInUSD = amount / rates[from];
-                    double result = amountInUSD * rates[to];
+                    // Используем CurrencyRateService для конвертации
+                    double result = CurrencyRateService.Convert(from, to, amount);
 
                     isLeftChanged = true;
                     textBox1.Text = result.ToString("F2");
@@ -439,8 +441,9 @@ namespace СourseWork
             string left = comboBox1.SelectedItem.ToString();
             string right = comboBox2.SelectedItem.ToString();
 
-            double rateLeftToRight = rates[right] / rates[left];
-            double rateRightToLeft = rates[left] / rates[right];
+            // Используем CurrencyRateService для получения курсов
+            double rateLeftToRight = CurrencyRateService.Convert(left, right, 1.0);
+            double rateRightToLeft = CurrencyRateService.Convert(right, left, 1.0);
 
             lblLeftRate.Text = $"1 {right} = {rateRightToLeft:F4} {left}";
             lblRightRate.Text = $"1 {left} = {rateLeftToRight:F4} {right}";
@@ -492,6 +495,79 @@ namespace СourseWork
         private void lblRightTitle_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void LoadCurrencyRates()
+        {
+            // Загружаем курсы из сервиса (синхронно из кэша или файла)
+            rates = CurrencyRateService.GetRates();
+
+            // Асинхронно обновляем курсы в фоне, если они устарели
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await CurrencyRateService.GetRatesAsync();
+                    // Обновляем комбобоксы в основном потоке
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        UpdateCurrencyComboBoxes();
+                        UpdateRateLabels();
+                    });
+                }
+                catch
+                {
+                    // Игнорируем ошибки обновления в фоне
+                }
+            });
+        }
+
+        private void UpdateCurrencyComboBoxes()
+        {
+            if (rates == null || rates.Count == 0)
+            {
+                // Если курсы не загружены, используем базовые
+                rates = CurrencyRateService.GetDefaultRates();
+            }
+
+            // Сохраняем текущие выбранные валюты
+            string selectedLeft = comboBox1.SelectedItem?.ToString() ?? "KZT";
+            string selectedRight = comboBox2.SelectedItem?.ToString() ?? "USD";
+
+            // Обновляем список валют
+            comboBox1.Items.Clear();
+            comboBox2.Items.Clear();
+            comboBox1.Items.AddRange(rates.Keys.OrderBy(k => k).ToArray());
+            comboBox2.Items.AddRange(rates.Keys.OrderBy(k => k).ToArray());
+
+            // Восстанавливаем выбранные валюты
+            if (comboBox1.Items.Contains(selectedLeft))
+            {
+                comboBox1.SelectedItem = selectedLeft;
+            }
+            else
+            {
+                comboBox1.SelectedIndex = comboBox1.Items.IndexOf("KZT") >= 0
+                    ? comboBox1.Items.IndexOf("KZT")
+                    : (comboBox1.Items.Count > 0 ? 0 : -1);
+            }
+
+            if (comboBox2.Items.Contains(selectedRight))
+            {
+                comboBox2.SelectedItem = selectedRight;
+            }
+            else
+            {
+                comboBox2.SelectedIndex = comboBox2.Items.IndexOf("USD") >= 0
+                    ? comboBox2.Items.IndexOf("USD")
+                    : (comboBox2.Items.Count > 0 ? 1 : -1);
+            }
+
+            // Обновляем курсы, если комбобоксы были инициализированы
+            if (comboBox1.SelectedItem != null && comboBox2.SelectedItem != null)
+            {
+                UpdateRateLabels();
+            }
         }
     }
 }
