@@ -26,7 +26,7 @@ namespace СourseWork
         public ConverterPage()
         {
             InitializeComponent();
-            
+
             // Устанавливаем Dock для растягивания на весь экран
             this.Dock = DockStyle.Fill;
 
@@ -62,21 +62,21 @@ namespace СourseWork
 
             UpdateRateLabels();
             HighlightQuickButtons();
-            
+
             // Обработчик для адаптации элементов при изменении размера
             this.Resize += ConverterPage_Resize;
-            
+
             // Вызываем один раз для начальной настройки позиций после полной загрузки
             this.HandleCreated += (s, e) =>
             {
                 this.BeginInvoke(new Action(() => ConverterPage_Resize(this, EventArgs.Empty)));
             };
         }
-        
+
         private void ConverterPage_Resize(object sender, EventArgs e)
         {
             const int breakpointWidth = 800; // Ширина для переключения макета
-            
+
             if (this.Width >= breakpointWidth)
             {
                 // Горизонтальный макет (side-by-side)
@@ -93,26 +93,26 @@ namespace СourseWork
         {
             // Минимальная ширина для горизонтального макета
             if (this.Width < 700) return;
-            
+
             // Центрируем элементы конвертера по горизонтали
             int centerX = this.Width / 2;
             int spacing = 50; // Расстояние между элементами
             int elementWidth = 300; // Ширина каждого блока
             int swapWidth = buttonSwap != null ? buttonSwap.Width : 68; // Ширина swap иконки
-            
+
             // Рассчитываем позиции с учетом swap иконки
             int totalWidth = elementWidth * 2 + swapWidth + spacing * 2;
             int startX = centerX - totalWidth / 2;
-            
+
             // Левый блок
             int leftX = Math.Max(startX, 20);
-            
+
             // Swap иконка между блоками
             int swapX = leftX + elementWidth + spacing;
-            
+
             // Правый блок
             int rightX = swapX + swapWidth + spacing;
-            
+
             // Проверяем, помещается ли все в окно
             if (rightX + elementWidth > this.Width - 20)
             {
@@ -123,14 +123,24 @@ namespace СourseWork
                 leftX = swapX - spacing - elementWidth;
                 if (leftX < 20) leftX = 20;
             }
-            
-            // Фиксированная вертикальная позиция для всех элементов
-            int textBoxTop = 253; // Базовая вертикальная позиция текстовых полей
-            int textBoxHeight = 110; // Высота текстовых полей
-            int titleTop = 153; // Позиция заголовков
-            int panelTop = 200; // Позиция панелей с кнопками
-            int rateTop = textBoxTop + textBoxHeight + 10; // Позиция меток курсов
-            
+
+            // Адаптивная вертикальная позиция и высота на основе высоты окна
+            int baseHeight = 600; // Базовая высота окна для расчетов
+            double heightRatio = Math.Max(0.5, Math.Min(2.0, (double)this.Height / baseHeight)); // Ограничиваем от 0.5 до 2.0
+
+            // Высота текстовых полей адаптируется к высоте окна
+            int baseTextBoxHeight = 110;
+            int minTextBoxHeight = 60;
+            int maxTextBoxHeight = 200;
+            int textBoxHeight = Math.Max(minTextBoxHeight, Math.Min(maxTextBoxHeight, (int)(baseTextBoxHeight * heightRatio)));
+
+            // Вертикальные позиции адаптируются к высоте окна
+            int baseTopOffset = 150; // Базовая позиция сверху
+            int titleTop = Math.Max(80, (int)(baseTopOffset * heightRatio)); // Минимум 80px от верха
+            int panelTop = titleTop + 50;
+            int textBoxTop = panelTop + 50;
+            int rateTop = textBoxTop + textBoxHeight + 10;
+
             // Обновляем позиции элементов слева
             if (lblLeftTitle != null && !lblLeftTitle.IsDisposed)
             {
@@ -154,7 +164,7 @@ namespace СourseWork
                 lblLeftRate.Left = leftX + 10;
                 lblLeftRate.Top = rateTop;
             }
-            
+
             // Обновляем позиции элементов справа
             if (lblRightTitle != null && !lblRightTitle.IsDisposed)
             {
@@ -178,13 +188,13 @@ namespace СourseWork
                 lblRightRate.Left = rightX + 10;
                 lblRightRate.Top = rateTop;
             }
-            
+
             // Центрируем кнопку swap точно между двумя текстовыми полями
             if (buttonSwap != null && !buttonSwap.IsDisposed)
             {
                 // По горизонтали - точно между полями
                 buttonSwap.Left = swapX;
-                
+
                 // По вертикали - точно по центру текстовых полей
                 int textBoxCenterY = textBoxTop + textBoxHeight / 2;
                 buttonSwap.Top = textBoxCenterY - buttonSwap.Height / 2;
@@ -197,18 +207,27 @@ namespace СourseWork
             int elementWidth = Math.Min(300, this.Width - 100); // Ширина блока с отступами
             int centerX = this.Width / 2;
             int leftX = centerX - elementWidth / 2;
-            
-            // Высота элементов
-            int textBoxHeight = 110;
+
+            // Адаптивная высота элементов на основе высоты окна
+            int baseHeight = 600; // Базовая высота окна для расчетов
+            double heightRatio = Math.Max(0.5, Math.Min(2.0, (double)this.Height / baseHeight)); // Ограничиваем от 0.5 до 2.0
+
+            // Высота текстовых полей адаптируется
+            int baseTextBoxHeight = 110;
+            int minTextBoxHeight = 50;
+            int maxTextBoxHeight = 180;
+            int textBoxHeight = Math.Max(minTextBoxHeight, Math.Min(maxTextBoxHeight, (int)(baseTextBoxHeight * heightRatio)));
+
             int spacing = 30; // Расстояние между верхней и нижней панелью
-            
-            // Верхняя панель (У меня есть)
-            int topPanelTop = 100;
+
+            // Верхняя панель (У меня есть) - позиции адаптируются
+            int baseTopPanelTop = 80;
+            int topPanelTop = (int)(baseTopPanelTop * heightRatio);
             int topTitleTop = topPanelTop;
             int topPanelButtonsTop = topPanelTop + 40;
             int topTextBoxTop = topPanelButtonsTop + 50;
             int topRateTop = topTextBoxTop + textBoxHeight + 10;
-            
+
             // Обновляем позиции элементов верхней панели
             if (lblLeftTitle != null && !lblLeftTitle.IsDisposed)
             {
@@ -233,14 +252,34 @@ namespace СourseWork
                 lblLeftRate.Left = leftX + 10;
                 lblLeftRate.Top = topRateTop;
             }
-            
+
             // Нижняя панель (Хочу приобрести)
+            // Проверяем, помещается ли нижняя панель в окно
             int bottomPanelTop = topRateTop + 40 + spacing;
             int bottomTitleTop = bottomPanelTop;
             int bottomPanelButtonsTop = bottomPanelTop + 40;
             int bottomTextBoxTop = bottomPanelButtonsTop + 50;
             int bottomRateTop = bottomTextBoxTop + textBoxHeight + 10;
-            
+
+            // Если нижняя панель не помещается, уменьшаем отступы и высоты
+            if (bottomRateTop > this.Height - 20)
+            {
+                // Уменьшаем spacing и высоты пропорционально
+                int overflow = bottomRateTop - (this.Height - 20);
+                spacing = Math.Max(10, spacing - overflow / 2);
+                if (textBoxHeight > minTextBoxHeight)
+                {
+                    textBoxHeight = Math.Max(minTextBoxHeight, textBoxHeight - overflow / 2);
+                    // Пересчитываем позиции с новыми значениями
+                    topRateTop = topTextBoxTop + textBoxHeight + 10;
+                    bottomPanelTop = topRateTop + 40 + spacing;
+                    bottomTitleTop = bottomPanelTop;
+                    bottomPanelButtonsTop = bottomPanelTop + 40;
+                    bottomTextBoxTop = bottomPanelButtonsTop + 50;
+                    bottomRateTop = bottomTextBoxTop + textBoxHeight + 10;
+                }
+            }
+
             // Обновляем позиции элементов нижней панели
             if (lblRightTitle != null && !lblRightTitle.IsDisposed)
             {
@@ -265,13 +304,13 @@ namespace СourseWork
                 lblRightRate.Left = leftX + 10;
                 lblRightRate.Top = bottomRateTop;
             }
-            
+
             // Кнопка swap справа по центру между панелями
             if (buttonSwap != null && !buttonSwap.IsDisposed)
             {
                 // По горизонтали - справа с отступом
                 buttonSwap.Left = this.Width - buttonSwap.Width - 30;
-                
+
                 // По вертикали - между двумя панелями
                 int swapCenterY = (topRateTop + bottomTitleTop) / 2;
                 buttonSwap.Top = swapCenterY - buttonSwap.Height / 2;

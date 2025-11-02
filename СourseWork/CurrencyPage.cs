@@ -15,6 +15,7 @@ namespace СourseWork
         private TextBox txtSearch;
         private DataGridView dataGridViewRates;
 
+        // Наименования валют
         private readonly Dictionary<string, string> currencyNames = new Dictionary<string, string>()
         {
             { "USD", "Доллар США" },
@@ -31,7 +32,34 @@ namespace СourseWork
             { "AUD", "Австралийский доллар" },
             { "AED", "Дирхам ОАЭ" },
             { "SEK", "Шведская крона" },
-            { "PLN", "Польский злотый" }
+            { "PLN", "Польский злотый" },
+            { "AZN", "Азербайджанский манат" },
+            { "AMD", "Армянский драм" },
+            { "BYN", "Белорусский рубль" },
+            { "BRL", "Бразильский реал" },
+            { "HUF", "Венгерский форинт" },
+            { "HKD", "Гонконгский доллар" },
+            { "GEL", "Грузинский лари" },
+            { "DKK", "Датская крона" },
+            { "INR", "Индийская рупия" },
+            { "KRW", "Южнокорейская вона" },
+            { "KWD", "Кувейтский динар" },
+            { "KZT", "Казахстанский тенге" },
+            { "MYR", "Малайзийский ринггит" },
+            { "MDL", "Молдавский лей" },
+            { "NZD", "Новозеландский доллар" },
+            { "NOK", "Норвежская крона" },
+            { "SGD", "Сингапурский доллар" },
+            { "TJS", "Таджикский сомони" },
+            { "THB", "Тайский бат" },
+            { "TMT", "Туркменский манат" },
+            { "UAH", "Украинская гривна" },
+            { "CZK", "Чешская крона" },
+            { "ZAR", "Южноафриканский рэнд" },
+            { "MXN", "Мексиканское песо" },
+            { "IRR", "Иранский риал " },
+            { "SAR", "Саудовский риял " },
+            { "XDR", "Специальные права заимствования " },
         };
 
         public CurrencyPage()
@@ -93,14 +121,15 @@ namespace СourseWork
             };
 
             dataGridViewRates.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            dataGridViewRates.ColumnHeadersDefaultCellStyle.BackColor = Color.Gainsboro;
-            dataGridViewRates.ColumnHeadersDefaultCellStyle.ForeColor = Color.Black;
+            dataGridViewRates.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(122, 86, 255);
+            dataGridViewRates.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dataGridViewRates.EnableHeadersVisualStyles = false;
 
             dataGridViewRates.DefaultCellStyle.Font = new Font("Segoe UI", 10);
             dataGridViewRates.DefaultCellStyle.BackColor = Color.White;
             dataGridViewRates.DefaultCellStyle.ForeColor = Color.Black;
-            dataGridViewRates.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
+            dataGridViewRates.DefaultCellStyle.SelectionBackColor = Color.FromArgb(122, 86, 255);
+            dataGridViewRates.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(243, 247, 255);
 
             dataGridViewRates.Columns.Add("Currency", "Валюта");
             dataGridViewRates.Columns.Add("Code", "Код");

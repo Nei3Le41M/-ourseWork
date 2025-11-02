@@ -56,7 +56,7 @@
             // textBox2
             // 
             textBox2.Font = new Font("Segoe UI", 28F);
-            textBox2.Location = new Point(504, 188);
+            textBox2.Location = new Point(504, 153);
             textBox2.Multiline = true;
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(300, 110);
@@ -65,7 +65,7 @@
             // textBox1
             // 
             textBox1.Font = new Font("Segoe UI", 28F);
-            textBox1.Location = new Point(68, 190);
+            textBox1.Location = new Point(68, 155);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(300, 110);
@@ -93,7 +93,7 @@
             // 
             lblLeftTitle.AutoSize = true;
             lblLeftTitle.Font = new Font("Segoe UI", 11F);
-            lblLeftTitle.Location = new Point(68, 88);
+            lblLeftTitle.Location = new Point(68, 53);
             lblLeftTitle.Name = "lblLeftTitle";
             lblLeftTitle.Size = new Size(114, 25);
             lblLeftTitle.TabIndex = 10;
@@ -103,7 +103,7 @@
             // 
             lblRightTitle.AutoSize = true;
             lblRightTitle.Font = new Font("Segoe UI", 11F);
-            lblRightTitle.Location = new Point(504, 88);
+            lblRightTitle.Location = new Point(504, 53);
             lblRightTitle.Name = "lblRightTitle";
             lblRightTitle.Size = new Size(163, 25);
             lblRightTitle.TabIndex = 11;
@@ -115,7 +115,7 @@
             lblLeftRate.AutoSize = true;
             lblLeftRate.Font = new Font("Segoe UI", 9F);
             lblLeftRate.ForeColor = SystemColors.GrayText;
-            lblLeftRate.Location = new Point(78, 258);
+            lblLeftRate.Location = new Point(78, 223);
             lblLeftRate.Name = "lblLeftRate";
             lblLeftRate.Size = new Size(141, 20);
             lblLeftRate.TabIndex = 12;
@@ -126,7 +126,7 @@
             lblRightRate.AutoSize = true;
             lblRightRate.Font = new Font("Segoe UI", 9F);
             lblRightRate.ForeColor = SystemColors.GrayText;
-            lblRightRate.Location = new Point(514, 258);
+            lblRightRate.Location = new Point(514, 223);
             lblRightRate.Name = "lblRightRate";
             lblRightRate.Size = new Size(141, 20);
             lblRightRate.TabIndex = 13;
@@ -139,7 +139,7 @@
             panelQuickLeft.Controls.Add(btnL_EUR);
             panelQuickLeft.Controls.Add(btnL_RUB);
             panelQuickLeft.Controls.Add(comboBox1);
-            panelQuickLeft.Location = new Point(68, 135);
+            panelQuickLeft.Location = new Point(68, 100);
             panelQuickLeft.Name = "panelQuickLeft";
             panelQuickLeft.Size = new Size(300, 35);
             panelQuickLeft.TabIndex = 14;
@@ -191,7 +191,7 @@
             panelQuickRight.Controls.Add(btnR_EUR);
             panelQuickRight.Controls.Add(btnR_RUB);
             panelQuickRight.Controls.Add(comboBox2);
-            panelQuickRight.Location = new Point(504, 135);
+            panelQuickRight.Location = new Point(504, 100);
             panelQuickRight.Name = "panelQuickRight";
             panelQuickRight.Size = new Size(300, 35);
             panelQuickRight.TabIndex = 15;
@@ -240,7 +240,7 @@
             // 
             buttonSwap.BackgroundImageLayout = ImageLayout.Zoom;
             buttonSwap.Image = (Image)resources.GetObject("buttonSwap.Image");
-            buttonSwap.Location = new Point(400, 190);
+            buttonSwap.Location = new Point(400, 155);
             buttonSwap.Name = "buttonSwap";
             buttonSwap.Size = new Size(68, 62);
             buttonSwap.TabIndex = 16;

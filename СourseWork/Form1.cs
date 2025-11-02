@@ -149,6 +149,8 @@ namespace СourseWork
             InitializeComponent();
             btnLogin.Click += btnLogin_Click;
 
+            this.MinimumSize = new Size(700, 650);
+
             //закрытие меню при клике вне его
             profileIcon.Click += profileIcon_Click;
             this.MouseDown += Form1_MouseDown;
@@ -208,6 +210,11 @@ namespace СourseWork
                     profileIcon.Visible = false;
                 }
             }
+
+            // Загружаем страницу конвертера при запуске
+            LoadPage(new ConverterPage());
+            SetSection("Конвертер", Properties.Resources.converter);
+            SetActiveButton(btnConverter, Color.White, Color.FromArgb(230, 230, 248), Color.FromArgb(122, 86, 255));
         }
 
         // Закрытие profile popup при клике вне его
@@ -394,6 +401,7 @@ namespace СourseWork
             }
             LoadPage(new HistoryPage());
             SetSection("История", Properties.Resources.history);
+            SetActiveButton(btnHistory, Color.White, Color.FromArgb(230, 230, 248), Color.FromArgb(122, 86, 255));
         }
 
         private void btnCurrency_Click(object sender, EventArgs e)
@@ -405,6 +413,7 @@ namespace СourseWork
             }
             LoadPage(new CurrencyPage());
             SetSection("Валюты", Properties.Resources.currency);
+            SetActiveButton(btnCurrency, Color.White, Color.FromArgb(230, 230, 248), Color.FromArgb(122, 86, 255));
         }
         private void btnDynamics_Click(object sender, EventArgs e)
         {
@@ -415,12 +424,14 @@ namespace СourseWork
             }
             LoadPage(new DynamicsPage());
             SetSection("График", Properties.Resources.converter);
+            SetActiveButton(btnDynamics, Color.White, Color.FromArgb(230, 230, 248), Color.FromArgb(122, 86, 255));
         }
 
         private void btnConverter_Click(object sender, EventArgs e)
         {
             LoadPage(new ConverterPage());
             SetSection("Конвертер", Properties.Resources.converter);
+            SetActiveButton(btnConverter, Color.White, Color.FromArgb(230, 230, 248), Color.FromArgb(122, 86, 255));
         }
 
         private void LoadPage(UserControl page)
